@@ -1,12 +1,12 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import { Move } from '@/types/bjj'
+import { Move, MoveFormData } from '@/types/bjj'
 import { moves as initialMoves } from '@/data/moves'
 import { nanoid } from 'nanoid'
 
 interface MoveState {
   moves: Move[]
-  addMove: (move: Omit<Move, 'id' | 'tags'> & { tags: string[] }) => void
+  addMove: (move: MoveFormData) => void
   updateMove: (move: Move) => void
   deleteMove: (id: string) => void
   getMoveById: (id: string) => Move | undefined
@@ -18,10 +18,7 @@ export const useMoveStore = create<MoveState>()(
       moves: initialMoves,
       addMove: (move) =>
         set((state) => ({
-          moves: [
-            ...state.moves,
-            { ...move, id: nanoid(), tags: move.tags as any },
-          ],
+          moves: [...state.moves, { ...move, id: nanoid() }],
         })),
       updateMove: (updatedMove) =>
         set((state) => ({
