@@ -3,16 +3,18 @@
 import { MoveForm } from '@/components/MoveForm/MoveForm'
 import { useMoveStore } from '@/store/moveStore'
 import { notFound } from 'next/navigation'
+import { use } from 'react'
 
 interface EditMovePageProps {
-  params: {
+  params: Promise<{
     id: string
-  }
+  }>
 }
 
 export default function EditMovePage({ params }: EditMovePageProps) {
+  const { id } = use(params)
   const getMoveById = useMoveStore((state) => state.getMoveById)
-  const move = getMoveById(params.id)
+  const move = getMoveById(id)
 
   if (!move) {
     notFound()

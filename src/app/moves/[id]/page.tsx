@@ -5,11 +5,12 @@ import Link from 'next/link'
 import { notFound, useRouter } from 'next/navigation'
 import { Button } from '@/components/Button/Button'
 import { useHydration } from '@/hooks/useHydration'
+import { use } from 'react'
 
 interface MovePageProps {
-  params: {
+  params: Promise<{
     id: string
-  }
+  }>
 }
 
 const YoutubeEmbed = ({ url, title }: { url: string; title: string }) => {
@@ -30,6 +31,7 @@ const YoutubeEmbed = ({ url, title }: { url: string; title: string }) => {
 }
 
 export default function MovePage({ params }: MovePageProps) {
+  const { id } = use(params)
   const router = useRouter()
   const { getMoveById, deleteMove, moves } = useMoveStore()
   const hydrated = useHydration()
@@ -38,7 +40,7 @@ export default function MovePage({ params }: MovePageProps) {
     return null
   }
 
-  const move = getMoveById(params.id)
+  const move = getMoveById(id)
 
   if (!move) {
     notFound()
@@ -46,7 +48,7 @@ export default function MovePage({ params }: MovePageProps) {
 
   const handleDelete = () => {
     if (window.confirm('Are you sure you want to delete this move?')) {
-      deleteMove(params.id)
+      deleteMove(id)
       router.push('/')
     }
   }
